@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="/Users/sam/Documents/Dev/Picard/sam-1.92.jar"/>
+	<classpathentry exported="true" kind="lib" path="/Users/sam/Documents/Dev/Picard/picard-tools-1.92/picard-tools-1.92/picard-1.92.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
