@@ -1,4 +1,6 @@
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import net.sf.samtools.*;
@@ -184,42 +186,30 @@ public class polyAextract {
 	// String line = null;
 	
 	public static char replace(char in) {
-		switch (in) {
-		case 'A':
-			return 'T';
-		case 'T':
-			return 'A';
-		case 'C':
-			return 'G';
-		case 'G':
-			return 'C';
-	//-------------------------Reynaldo--------------------------------
-		case 'a':
-			return 't';
-		case 't':
-			return 'a';
-		case 'c':
-			return 'g';
-		case 'g':
-			return 'c';
-		case 'R':
-			return 'Y';
-		case 'Y':
-			return 'R';
-		case 'K':
-			return 'M';
-		case 'M':
-			return 'K';
-		case 'S':
-			return 'W';
-		case 'W':
-			return 'S';
-		case 'B': case 'D': case 'H': case 'V': case 'N': case 'X': case '-':
-			return in;
-	//-------------------------Reynaldo--------------------------------
-		default:
-			throw new IllegalArgumentException();
-		}
+		Map<Character, Character> charReplacementMap = new HashMap<Character, Character>();
+
+		charReplacementMap.put('G', 'C');
+		charReplacementMap.put('C', 'G');
+		charReplacementMap.put('A', 'T');
+		charReplacementMap.put('T', 'A');
+
+		charReplacementMap.put('a', 't');
+		charReplacementMap.put('t', 'a');
+		charReplacementMap.put('c', 'g');
+		charReplacementMap.put('g', 'c');
+
+		charReplacementMap.put('R', 'Y');
+		charReplacementMap.put('Y', 'R');
+		charReplacementMap.put('K', 'M');
+		charReplacementMap.put('M', 'K');
+		charReplacementMap.put('S', 'W');
+		charReplacementMap.put('W', 'S');
+		
+		charReplacementMap.put('N', 'N');
+		charReplacementMap.put('-', '-');
+		
+		char complement =  charReplacementMap.get(in);
+		return complement;
 	}
 	
 	public static void seq() {
