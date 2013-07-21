@@ -52,7 +52,7 @@ public class polyAextract {
 		//This retrieves the .fai file, given the .fa file.
 		IndexedFastaSequenceFile seqFile = new IndexedFastaSequenceFile(genome);
 		//This was left like this just for instantiation
-		ReferenceSequence refSeq = seqFile.getSubsequenceAt("chr1", 10001, 10005); //Notice, this takes the first 5 bases (after all the Ns)
+		ReferenceSequence refSeq = null;
 		//Reading from the .bed file; which contains the Poly-A sites.
 		BasicInputParser polyAsites = new BasicInputParser(true, polyAfile);
 		//These 3 variables will serve as inputs in the getSubsequenceAt method above.
@@ -135,25 +135,16 @@ public class polyAextract {
 				// This part makes the .fa file if the stand is '-'
 				if (isMinus){
 					if (chromosome.equals(header)) {
-						writer.write("\n" + ">" + header + ":" + start + "-" + end+ "+" + tailLength + "A");
-						writer.write("\n" + feed + tail);
+						writer.write(">" + header + ":" + start + "-" + end+ "+" + tailLength + "A" + "\n");
+						writer.write(feed + tail + "\n");
 						System.out.println(">" + header + ":" + start + "-" + end+ "+" + tailLength + "A"); // Testing purposes
 						System.out.println(feed + tail); // Testing purposes
 					} else {
-						if (indicator == 1) {
-							header = chromosome;
-							writer.write("\n" + ">" + header + ":" + start + "-"+ end + "+" + tailLength + "A");
-							writer.write("\n" + feed + tail);
-							System.out.println(">" + header + ":" + start + "-"+ end + "+" + tailLength + "A"); // Testing purposes
-							System.out.println(feed + tail); // Testing purposes
-						} else {
-							header = chromosome;
-							writer.write(">" + header + ":" + start + "-" + end+ "+" + tailLength + "A");
-							writer.write("\n" + feed + tail);
-							System.out.println(">" + header + ":" + start + "-"+ end + "+" + tailLength + "A"); // Testing
-							System.out.println(feed + tail); // Testing purposes
-							indicator = 1;
-						}
+						header = chromosome;
+						writer.write(">" + header + ":" + start + "-"+ end + "+" + tailLength + "A" + "\n");
+						writer.write(feed + tail + "\n");
+						System.out.println(">" + header + ":" + start + "-"+ end + "+" + tailLength + "A"); // Testing purposes
+						System.out.println(feed + tail); // Testing purposes
 					}
 				}
 				//-------------------------Reynaldo--------------------------------
@@ -161,29 +152,21 @@ public class polyAextract {
 				// This part makes the .fa file if the strand is '+'
 				else {
 					if (chromosome.equals(header)) {
-						writer.write("\n" + ">" + header + ":" + start + "-" + end+ "+" + tailLength + "A");
-						writer.write("\n" + bases + tail);
+						writer.write(">" + header + ":" + start + "-" + end+ "+" + tailLength + "A" + "\n");
+						writer.write(bases + tail + "\n");
 						System.out.println(">" + header + ":" + start + "-" + end+ "+" + tailLength + "A"); // Testing purposes
 						System.out.println(bases + tail); // Testing purposes
-					} else {
-						if (indicator == 1) {
-							header = chromosome;
-							writer.write("\n" + ">" + header + ":" + start + "-"+ end + "+" + tailLength + "A");
-							writer.write("\n" + bases + tail);
-							System.out.println(">" + header + ":" + start + "-"+ end + "+" + tailLength + "A"); // Testing purposes
-							System.out.println(bases + tail); // Testing purposes
-						} else {
-							header = chromosome;
-							writer.write(">" + header + ":" + start + "-" + end+ "+" + tailLength + "A");
-							writer.write("\n" + bases + tail);
-							System.out.println(">" + header + ":" + start + "-"+ end + "+" + tailLength + "A"); // Testing
-							System.out.println(bases + tail); // Testing purposes
-							indicator = 1;
+					} 
+					else {
+						header = chromosome;
+						writer.write(">" + header + ":" + start + "-" + end+ "+" + tailLength + "A" + "\n");
+						writer.write(bases + tail + "\n");
+						System.out.println(">" + header + ":" + start + "-"+ end + "+" + tailLength + "A"); // Testing
+						System.out.println(bases + tail); // Testing purposes
 						}
 					}
 				}
 				//-------------------------Reynaldo--------------------------------
-			}
 	        writer.close();
 	        polyAsites.close();
         }
