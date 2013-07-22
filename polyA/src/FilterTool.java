@@ -3,21 +3,50 @@ import java.util.*;
 
 
 public class FilterTool {
-	int _x;
-	
-	public FilterTool(String firstEndPath, String secondEndPath, int numberToDetect, String outputFileName) throws IOException{
+	static Integer numberToDetect;
 		
-		_x = numberToDetect;
+	public static void main(String[] args) throws IOException {
 		
-		File outputFile1 = new File(outputFileName+"1");
-		Writer outputWriter1 = new BufferedWriter(new FileWriter(outputFile1));
+		String outputFileName = null;
 		
-		File outputFile2 = new File(outputFileName+"2");
+		File outputFile1 = null;
+		File outputFile2 = null;
+		
+		File firstEnd = null;
+		File secondEnd = null;
+		
+		int i=0;
+		boolean printHelp = false;
+		while(i<args.length && args[i].charAt(0)=='-') {
+			if("-f".equalsIgnoreCase(args[i])) {
+				i++;
+				firstEnd = new File(args[i]);
+			} else if("-s".equalsIgnoreCase(args[i])) {
+				i++;
+				secondEnd = new File(args[i]); //age.parseInt(args[i]);
+			} else if("-n".equalsIgnoreCase(args[i])) {
+				i++;
+				numberToDetect = numberToDetect.parseInt(args[i]);
+			} else if("-o".equalsIgnoreCase(args[i])) {
+				i++;
+				outputFileName = args[i];
+			} 
+			else {
+				 printHelp = true;
+			}
+			i++;
+		}
+		
+		if( args.length < 8 || printHelp ) {
+			System.out.println("USAGE: extract -f <first-paired-end-read> -s <second-paired-end-read> -n <number-to-detect> -o <output-file-name>");
+			return;
+		}
+				
+		Writer outputWriter1 = new BufferedWriter(new FileWriter(outputFile1));	
 		Writer outputWriter2 = new BufferedWriter(new FileWriter(outputFile2));
 		
 		try {
-			File firstEnd = new File(firstEndPath);
-			File secondEnd = new File(secondEndPath);
+			
 			
 			Scanner firstEndScanner = new Scanner(firstEnd);
 			Scanner secondEndScanner = new Scanner(secondEnd);
@@ -38,7 +67,7 @@ public class FilterTool {
 				firstRead = firstRead + firstEndScanner.next() + "\n";
 				firstRead = firstRead + firstEndScanner.next();
 				
-				if (tCounter(secondSequence) == _x) {
+				if (tCounter(secondSequence) == numberToDetect) {
 					
 					outputWriter1.write(firstRead + "\n");
 					outputWriter2.write(secondRead + "\n");
@@ -51,23 +80,18 @@ public class FilterTool {
 		}
 		
 		outputWriter1.close();
-		outputWriter2.close();
-				
+		outputWriter2.close();		
 	}
 	
-	public int tCounter(String sequence) {
+	public static int tCounter(String sequence) {
 		int count = 0;
-		for (int i=0; i<_x ;i++){
+		for (int i=0; i<numberToDetect ;i++){
 			Character b = sequence.charAt(i);
 			if (b.equals('T') || b.equals('t')) {
 				count++;
 			}
 		}
 		return count;
-	}
-	
-	public static void main(String[] args) throws IOException {
-		FilterTool app = new FilterTool("/home/reynaldo/Documents/RegressionTest/RegressionTestForFilterTool/Test_s_6_1_sequence.txt", "/home/reynaldo/Documents/RegressionTest/RegressionTestForFilterTool/Test_s_6_2_sequence.txt", 5, "/home/reynaldo/Desktop/firstTestFile");
 	}
 
 }
