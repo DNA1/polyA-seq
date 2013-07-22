@@ -66,7 +66,7 @@ public class FilterTool {
 				firstRead = firstRead + firstEndScanner.next() + "\n";
 				firstRead = firstRead + firstEndScanner.next();
 				
-				if (tCounter(secondSequence) == numberToDetect) {
+				if (tCounter(secondSequence) >= numberToDetect) {
 					
 					outputWriter1.write(firstRead + "\n");
 					outputWriter2.write(secondRead + "\n");
