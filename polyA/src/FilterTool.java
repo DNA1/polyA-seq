@@ -29,7 +29,8 @@ public class FilterTool {
 				numberToDetect = numberToDetect.parseInt(args[i]);
 			} else if("-o".equalsIgnoreCase(args[i])) {
 				i++;
-				outputFileName = args[i];
+				outputFile1 = new File(args[i] +"1");
+				outputFile2 = new File(args[i] + "2");
 			} 
 			else {
 				 printHelp = true;
@@ -41,13 +42,11 @@ public class FilterTool {
 			System.out.println("USAGE: extract -f <first-paired-end-read> -s <second-paired-end-read> -n <number-to-detect> -o <output-file-name>");
 			return;
 		}
-				
+		
 		Writer outputWriter1 = new BufferedWriter(new FileWriter(outputFile1));	
 		Writer outputWriter2 = new BufferedWriter(new FileWriter(outputFile2));
 		
 		try {
-			
-			
 			Scanner firstEndScanner = new Scanner(firstEnd);
 			Scanner secondEndScanner = new Scanner(secondEnd);
 			
