@@ -1,7 +1,7 @@
 all: preclean compile jar clean
 
 preclean:
-	rm -f bin/polya-1.0.jar
+  rm -f bin/polya-1.0.jar
 
 compile:
 	javac -cp "SamTools/picard-1.92.jar:SamTools/sam-1.92.jar" \

@@ -1,0 +1,5 @@
+#!/bin/sh
+PolyADir="/home/reynaldo/Workspaces/JavaWorkspace/PolyA"
+echo "PolyADir="${PolyADir}
+echo "${PolyADir}/bin/polya-1.0.jar:${PolyADir}/SamTools/picard-1.92.jar:${PolyADir}/SamTools/sam-1.92.jar" polyAextract $@
+java -cp "${PolyADir}/bin/polya-1.0.jar:${PolyADir}/SamTools/picard-1.92.jar:${PolyADir}/SamTools/sam-1.92.jar" polyAextract $@
