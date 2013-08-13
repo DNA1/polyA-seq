@@ -5,10 +5,7 @@ public class FilterTool2 {
 	static Integer _x; //This is the minimum to detect
 	static Integer _y; //This is the maximum to detect.
 	
-	//public FilterTool2(String aCodingStrand, String aComplementStrand, int min, String outputFileName) throws IOException {
-
 	public static void main(String[] args) throws IOException {
-		//FilterTool2 app = new FilterTool2("/home/reynaldo/Documents/RegressionTest/RegressionTestForFilterTool2/Test_s_6_1_sequence.txt", "/home/reynaldo/Documents/RegressionTest/RegressionTestForFilterTool2/Test_s_6_2_sequence.txt", 5, "/home/reynaldo/Desktop/secondTestFile");
 		//Next 6 lines initialize variables that will be given values later.
 		String outputFileName = null;
 		
@@ -85,14 +82,14 @@ public class FilterTool2 {
 			if (tCounter(secondSequence) <= _y) {
 				//This block completes the complement strand read.
 				secondSequence = trimTs(secondSequence);
-				secondRead = secondRead + "\n" + secondSequence + "\n";
-				secondRead = secondRead + complementStrandScanner.next() + "\n";
-				secondRead = secondRead + complementStrandScanner.next();
+				secondRead = secondRead + "\n" + secondSequence + "\n"; //The second line of a fastq file contains the bases; which is why firstSequence is inserted here.
+				secondRead = secondRead + complementStrandScanner.next() + "\n"; //This adds the third line
+				secondRead = secondRead + complementStrandScanner.next(); //This adds the quality line score
 				
 				//This block completes the coding strand read.
-				firstRead = firstRead + "\n" + firstSequence + "\n"; //The second line of a fastq file contains the bases; which is why firstSequence is inserted here.
-				firstRead = firstRead + codingStrandScanner.next() + "\n"; //This adds the third line
-				firstRead = firstRead + codingStrandScanner.next(); //This adds the quality line score
+				firstRead = firstRead + "\n" + firstSequence + "\n"; 
+				firstRead = firstRead + codingStrandScanner.next() + "\n";
+				firstRead = firstRead + codingStrandScanner.next();
 				
 				//These 2 lines add the firstRead, and secondRead to the output files.
 				outputWriter1.write(firstRead + "\n");
