@@ -9,15 +9,18 @@ public class FilterTool2 {
 		
 		_x = min;
 		
-		/*The following 4 lines initialize the creation of the output Files.
-		 * Notice that the output file names are the same, except for the addition of a 1 and 2 differentiate
-		 * between the coding (1) and complement (2) strand.
+		/*The following 6 lines initialize the creation of the output Files.
+		 * Notice that the output file names are the same, except for the addition of a 1, 2, and "Case4Reads" differentiate
+		 * between the coding (1) and complement (2) strand, and a file that has Case 4 type reads.
 		 */
 		File outputFile1 = new File(outputFileName+"1");
 		Writer outputWriter1 = new BufferedWriter(new FileWriter(outputFile1));
 		
 		File outputFile2 = new File(outputFileName+"2");
 		Writer outputWriter2 = new BufferedWriter(new FileWriter(outputFile2));
+		
+		File outputFile3 = new File(outputFileName+"Case4Reads");
+		Writer outputWriter3 = new BufferedWriter(new FileWriter(outputFile3));
 		
 		/*The following 2 lines create the given strands into File types so that they may be accepted
 		 * as input for the Scanner class.
@@ -37,39 +40,65 @@ public class FilterTool2 {
 			String firstSequence = null;
 			String firstRead = codingStrandScanner.next(); //This will add the header.
 			firstSequence = codingStrandScanner.next(); //This variable called firstSequence will contain the bases.
-			firstRead = firstRead + "\n" + firstSequence + "\n"; //The second line of a fastq file contains the bases; which is why firstSequence is inserted here.
-			firstRead = firstRead + codingStrandScanner.next() + "\n"; //This adds the third line
-			firstRead = firstRead + codingStrandScanner.next(); //This adds the quality line score
+			//The rest of the read is conditionally made. You can find the rest of it in the if and else if statements.
 			
 			/*This module creates a string called secondRead; which contains a read from the complement Strand.
-			 * Note, [Finish note; mention the following: how this read is written is conditional]
+			 * It also creates a string called firstSequence; which holds in particular, the bases of the read.
 			 */
 			String secondSequence = null;
 			String secondRead = complementStrandScanner.next();
 			secondSequence = complementStrandScanner.next();
+			//The rest of this read is conditionally made. You can find the rest of it in the if and else if statements.
 			_y = secondSequence.length() - 20;
-			//This part trims T's if the read has <=y Ts
-			if (tCounter(secondSequence) <= _y) {
+			
+			//This part trims T's if the complement strand read has <=y Ts
+			if (this.tCounter(secondSequence) <= _y) {
+				//This block completes the complement strand read.
 				secondSequence = trimTs(secondSequence);
 				secondRead = secondRead + "\n" + secondSequence + "\n";
 				secondRead = secondRead + complementStrandScanner.next() + "\n";
 				secondRead = secondRead + complementStrandScanner.next();
 				
+				//This block completes the coding strand read.
+				firstRead = firstRead + "\n" + firstSequence + "\n"; //The second line of a fastq file contains the bases; which is why firstSequence is inserted here.
+				firstRead = firstRead + codingStrandScanner.next() + "\n"; //This adds the third line
+				firstRead = firstRead + codingStrandScanner.next(); //This adds the quality line score
+				
 				//These 2 lines add the firstRead, and secondRead to the output files.
 				outputWriter1.write(firstRead + "\n");
 				outputWriter2.write(secondRead + "\n");
 			}
-			//This will occur only if secondSequence has >y Ts.
-			else if (/*firstSequence has >=x As and <=y As*/ /*The "true" value is temporary*/true) {
-				/*1.Drop second read
-				 * 2.Trim As from the end of the coding strand read, and save first read
-				 * I think the last thing is strange. If we drop the second read, the two output files will have unbalanced pairs.
-				 */
+			
+			//This will occur only if secondSequence has >y Ts, and firstSequence has >=x and <= y As.
+			else if (this.aCounter(firstSequence) >=_x && this.aCounter(firstSequence) <=_y) {
+				//1.This will just advance the scanner's position, so its in the correct position for the next loop.
+				//The complement strand read will not be written to a file. It is dropped.
+				complementStrandScanner.next();
+				complementStrandScanner.next();
+				
+				//This block Trims As from end of first sequence, generates the reast of the coding strand read (which prepares it to be written to the file).
+				firstSequence = trimAs(firstSequence);
+				firstRead = firstRead + "\n" + firstSequence + "\n"; //The second line of a fastq file contains the bases; which is why firstSequence is inserted here.
+				firstRead = firstRead + codingStrandScanner.next() + "\n"; //This adds the third line
+				firstRead = firstRead + codingStrandScanner.next(); //This adds the quality line score
+				
+				//This will write to the file that contains Case 4 reads.
+				//Notice, only the coding strand read is saved, the complement strand read is dropped.
+				outputWriter3.write(firstRead + "\n");
+			}
+			//This will just advance the scanner's position, so its in the correct position for the next loop.
+			else {
+				codingStrandScanner.next();
+				codingStrandScanner.next();
+				
+				complementStrandScanner.next();
+				complementStrandScanner.next();
 			}
 		}
 		
 		outputWriter1.close();
 		outputWriter2.close();
+		outputWriter3.close();
 	}
 	
 	/*This method counts how many consecutive T's (despite capitalization) there are in 
@@ -108,17 +137,36 @@ public class FilterTool2 {
 		Character base = sequence.charAt(i);
 		//This loop will stop when the next character is not a T.
 		while (base.equals('T') || base.equals('t')){
-			//Do not add this character to the read
 			i++;
 			base = sequence.charAt(i);
 		}
 		/*This loop will continue where the other loop left off (notice j = i). This means the
-		 * character that wasn't equal to T or t (which cause the prior loop to end) is used here to continue.
+		 * character that wasn't equal to T or t (which caused the prior loop to end) is used here to continue.
 		 * This loop will save the rest of the characters (bases) in the string (sequence).
 		 */
 		for (int j = i; j<sequence.length(); j++){
 			read = read + base;
+			base = sequence.charAt(j);
+		}
+		return read;
+	}
+	
+	public String trimAs(String sequence) {
+		String read = "";
+		int i = sequence.length() - 1;
+		Character base = sequence.charAt(i);
+		//This loop will stop when the next character is not an A.
+		while (base.equals('A') || base.equals('a')) {
+			i--;
 			base = sequence.charAt(i);
+		}
+		/*This loop will continue where the other loop left off (notice j = i). This means the
+		 * character that wasn't equal to A or a (which caused the prior loop to end) is used here to continue.
+		 * This loop will save the rest of the characters (bases) in the string (sequence).
+		 */
+		for (int j = i; j >= 0; j--) {
+			read = base + read;
+			base = sequence.charAt(j);
 		}
 		return read;
 	}
