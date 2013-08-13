@@ -2,32 +2,62 @@ import java.io.*;
 import java.util.*;
 
 public class FilterTool2 {
-	int _x; //This is the minimum to detect
-	int _y; //This is the maximum to detect.
+	static Integer _x; //This is the minimum to detect
+	static Integer _y; //This is the maximum to detect.
 	
-	public FilterTool2(String aCodingStrand, String aComplementStrand, int min, String outputFileName) throws IOException {
+	//public FilterTool2(String aCodingStrand, String aComplementStrand, int min, String outputFileName) throws IOException {
+
+	public static void main(String[] args) throws IOException {
+		//FilterTool2 app = new FilterTool2("/home/reynaldo/Documents/RegressionTest/RegressionTestForFilterTool2/Test_s_6_1_sequence.txt", "/home/reynaldo/Documents/RegressionTest/RegressionTestForFilterTool2/Test_s_6_2_sequence.txt", 5, "/home/reynaldo/Desktop/secondTestFile");
+		//Next 6 lines initialize variables that will be given values later.
+		String outputFileName = null;
 		
-		_x = min;
+		File outputFile1 = null;
+		File outputFile2 = null;
+		File outputFile3 = null;
 		
-		/*The following 6 lines initialize the creation of the output Files.
-		 * Notice that the output file names are the same, except for the addition of a 1, 2, and "Case4Reads" differentiate
-		 * between the coding (1) and complement (2) strand, and a file that has Case 4 type reads.
-		 */
-		File outputFile1 = new File(outputFileName+"1");
-		Writer outputWriter1 = new BufferedWriter(new FileWriter(outputFile1));
+		File codingStrand = null;
+		File complementStrand = null;
 		
-		File outputFile2 = new File(outputFileName+"2");
+		int i=0;
+		boolean printHelp = false;
+		while(i<args.length && args[i].charAt(0)=='-') {
+			if("-f".equalsIgnoreCase(args[i])) {
+				i++;
+				codingStrand = new File(args[i]);
+			} else if("-s".equalsIgnoreCase(args[i])) {
+				i++;
+				complementStrand = new File(args[i]); //age.parseInt(args[i]);
+			} else if("-n".equalsIgnoreCase(args[i])) {
+				i++;
+				_x = _x.parseInt(args[i]);
+			} else if("-o".equalsIgnoreCase(args[i])) {
+				i++;
+				/*Note, the output files seem the same, but appending 1, 2, and "_Case4Reads" 		 
+				 * to the end of the files, differentiate them. Coding Strand (1), Complement Strand (2), and file that
+				 * contains case 4 reads ("_Case4Reads").
+				 */
+				outputFile1 = new File(args[i] +"1");
+				outputFile2 = new File(args[i] + "2");
+				outputFile3 = new File(args[i] + "_Case4Reads");
+			} 
+			else {
+				 printHelp = true;
+			}
+			i++;
+		}
+		
+		if( args.length < 8 || printHelp ) {
+			System.out.println("USAGE: extract -f <first-paired-end-read> -s <second-paired-end-read> -n <min-number-to-detect> -o <output-file-name>");
+			return;
+		}
+		
+		//This sets up the creation of the output files.
+		Writer outputWriter1 = new BufferedWriter(new FileWriter(outputFile1));	
 		Writer outputWriter2 = new BufferedWriter(new FileWriter(outputFile2));
-		
-		File outputFile3 = new File(outputFileName+"Case4Reads");
 		Writer outputWriter3 = new BufferedWriter(new FileWriter(outputFile3));
 		
-		/*The following 2 lines create the given strands into File types so that they may be accepted
-		 * as input for the Scanner class.
-		 */
-		File codingStrand = new File(aCodingStrand);
-		File complementStrand = new File(aComplementStrand);
-		
+		//This instantiates the scanners that will parse the two files.
 		Scanner codingStrandScanner = new Scanner(codingStrand);
 		Scanner complementStrandScanner= new Scanner(complementStrand);
 		
@@ -52,7 +82,7 @@ public class FilterTool2 {
 			_y = secondSequence.length() - 20;
 			
 			//This part trims T's if the complement strand read has <=y Ts
-			if (this.tCounter(secondSequence) <= _y) {
+			if (tCounter(secondSequence) <= _y) {
 				//This block completes the complement strand read.
 				secondSequence = trimTs(secondSequence);
 				secondRead = secondRead + "\n" + secondSequence + "\n";
@@ -70,7 +100,7 @@ public class FilterTool2 {
 			}
 			
 			//This will occur only if secondSequence has >y Ts, and firstSequence has >=x and <= y As.
-			else if (this.aCounter(firstSequence) >=_x && this.aCounter(firstSequence) <=_y) {
+			else if (aCounter(firstSequence) >=_x && aCounter(firstSequence) <=_y) {
 				//1.This will just advance the scanner's position, so its in the correct position for the next loop.
 				//The complement strand read will not be written to a file. It is dropped.
 				complementStrandScanner.next();
@@ -104,7 +134,7 @@ public class FilterTool2 {
 	/*This method counts how many consecutive T's (despite capitalization) there are in 
 	*the beginning of the complement strand.
 	*/
-	public int tCounter(String sequence) {
+	public static int tCounter(String sequence) {
 		int count = 0;
 		int i = 0;
 		Character base = sequence.charAt(i);
@@ -118,7 +148,7 @@ public class FilterTool2 {
 	}
 	
 	//Counts how many consecutive As (despite capitalization) are at the end of a coding Strand.
-	public int aCounter(String sequence) {
+	public static int aCounter(String sequence) {
 		int count = 0;
 		int i = sequence.length() - 1; //Will serve as character index. This index is the end of the String. Since index is 0 based, we must subtract 1.
 		Character base = sequence.charAt(i);
@@ -131,7 +161,7 @@ public class FilterTool2 {
 	}
 	
 	//This method trims T's from a complement strand.
-	public String trimTs(String sequence){
+	public static String trimTs(String sequence){
 		String read = "";
 		int i = 0;
 		Character base = sequence.charAt(i);
@@ -151,7 +181,7 @@ public class FilterTool2 {
 		return read;
 	}
 	
-	public String trimAs(String sequence) {
+	public static String trimAs(String sequence) {
 		String read = "";
 		int i = sequence.length() - 1;
 		Character base = sequence.charAt(i);
@@ -169,9 +199,5 @@ public class FilterTool2 {
 			base = sequence.charAt(j);
 		}
 		return read;
-	}
-	
-	public static void main(String[]args) throws IOException {
-		FilterTool2 app = new FilterTool2("/home/reynaldo/Documents/RegressionTest/RegressionTestForFilterTool2/Test_s_6_1_sequence.txt", "/home/reynaldo/Documents/RegressionTest/RegressionTestForFilterTool2/Test_s_6_2_sequence.txt", 5, "/home/reynaldo/Desktop/secondTestFile");
 	}
 }
