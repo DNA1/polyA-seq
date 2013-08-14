@@ -34,9 +34,9 @@ public class FilterTool2 {
 				 * to the end of the files, differentiate them. Coding Strand (1), Complement Strand (2), and file that
 				 * contains case 4 reads ("_Case4Reads").
 				 */
-				outputFile1 = new File(args[i] +"1");
-				outputFile2 = new File(args[i] + "2");
-				outputFile3 = new File(args[i] + "_Case4Reads");
+				outputFile1 = new File(args[i] +"_1.fq");
+				outputFile2 = new File(args[i] + "_2.fq");
+				outputFile3 = new File(args[i] + "_trimmed_Case4Reads.fq");
 			} 
 			else {
 				 printHelp = true;

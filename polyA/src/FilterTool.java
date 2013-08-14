@@ -32,8 +32,8 @@ public class FilterTool {
 				/*Note, the output files seem the same, but appending 1 and 2 		 
 				 * to the end of the files, differentiate them. Coding Strand (1), Complement Strand (2)
 				 */
-				outputFile1 = new File(args[i] +"1");
-				outputFile2 = new File(args[i] + "2");
+				outputFile1 = new File(args[i] +"_1.fq");
+				outputFile2 = new File(args[i] + "_2.fq");
 			} 
 			else {
 				 printHelp = true;
