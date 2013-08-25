@@ -1,8 +1,5 @@
-polyA
+polyAextract
 =====
-
-polyA seq tool called polyAextract
-
 
 To make this program work, you need to create a folder that contains the following files:
  
@@ -29,12 +26,8 @@ This program takes in 5 inputs.
 4. The forth parameter is the lenth of the polyA tail you would like to append.
    Note: If you don't want a polyA tail, you can make this parameter 0.
 
-5.The fifth parameter is the name and location of the output file; which should be sprecified as a string.
+5. The fifth parameter is the name and location of the output file; which should be sprecified as a string.
   
   Example:
-  
-   "/home/reynaldo/Desktop/outputFileName"
 
-
-FilterTool
-=====
+  "/home/reynaldo/Desktop/outputFileName"
