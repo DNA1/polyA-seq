@@ -11,7 +11,7 @@ This program takes in 5 inputs.
 
 1. The first parameter is the location of the reference Genome on the hard drive; which should be specfied as a string.
     
-   Example:
+   FOR Example:
    
  		"/home/reynaldo/Documents/hg19_ref_genome_nonrandom_sorted.fa"
  
