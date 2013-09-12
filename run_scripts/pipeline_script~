@@ -1,4 +1,19 @@
 #!/bin/bash
-clear #Just to clear up terminal window
+#Notes:
+# This script was created with the intent of being run from the folder it was created.
+# All file paths in this script are absolute (full paths)
 
-#I'll more things tomorrow (9/11/13)
+#Script Begins
+clear #Just to clear up terminal window
+# This will create a variable; which will contain an address that will be repeated throughout the script.
+projdir="/home/projects/gitrepos/polyA"
+# This will create a bin folder to put all the compiled code
+mkdir  $projdir/bin
+# Step 1 of pipeline: Select pairs where the second read starts with >=x T’s
+# Step 1.1: This will compile FilterTool 
+javac $projdir/src/FilterTool.java
+# This will move us to the src folder
+cd $projdir/src
+# This will move the FilterTool.class (which is FilterTool.java compiled) to the bin folder
+mv FilterTool.class $projdir/bin
+# This will move us to the 
