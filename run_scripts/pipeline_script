@@ -4,12 +4,20 @@
 # All file paths in this script are absolute (full paths).
 
 #Script Begins
+reads1File=$1
+reads2File=$2
+outputFileName=$3
+genome=/import1/bowtie_index/mm10/CD1/mm10_CD1.fa
+trancriptomeIndex=/import1/bowtie_index/mm10/CD1/mm10CD1Ens68_randOrder.fa
+genomeIndex=/import1/bowtie_index/mm10/CD1/mm10_CD1.fa
 
 # Changes the shell to bash (just in case anything isn't supported in the default)
 bash
-#This first block initializs a few folders and a variable for the script.
+#This first block initializs a few folders and variables for the script.
 # This will create a variable; which will contain an address that will be repeated throughout the script.
 nice PROJDIR="/home/projects/gitrepos/polyA"
+# This is another path variable
+nice ="/import1/bowtie_index/mm10/CD1"
 # This will create a bin folder to put all the compiled code
 nice mkdir  $PROJDIR/bin
 # This will create a folder to contain the resutls
@@ -26,24 +34,17 @@ nice mv FilterTool.class $PROJDIR/bin
 nice cd $PROJDIR/bin
 # ‎This will run FilterTool, but it need to have the feilds specified below filled
 # java FilterTool -f <first-paired-end-read> -s <second-paired-end-read> -n <number-to-detect> -o <output-file-name
-nice java FilterTool -f <> -s <> -n <> -o <>
+nice java FilterTool -f $reads1File -s $reads2File -n <> -o ${outputFileName}_step1 
 # Move output to the results folder (all output have the .fq extension)
 nice mv *.fq $PROJDIR/results
 
 # Step 2
 # Step 2.a [Parameters need to be filled]
-nice bowtie -k 10 -p 15 --sam --un <unmapped-pair-outputfile> /import1/bowtie_index/mm10/CD1/mm10CD1Ens68_randOrder.fa -1 /import2/RAHUL/RUN1/E16-CE_1.fastq  -2 /import2/RAHUL/RUN1/E16-CE_2.fastq  <output-file-name>
+nice bowtie -k 10 -p 15 --sam --un ${outputFileName}_step2a.fq $trancriptomeIndex -1 ${outputFileName}_step1_1.fq  -2 ${outputFileName}_step1_2.fq  ${outputFileName}_step2a.sam
 
-nice bowtie  -p 15 --sam --un <unmapped-pair-outputfile> /import1/bowtie_index/mm10/CD1/mm10CD1Ens68_randOrder.fa -1 /import2/RAHUL/RUN1/P0-CE_1.fastq -2 /import2/RAHUL/RUN1/P0-CE_2.fastq  <output-file-name>
-
-nice bowtie  -p 15 --sam --un <unmapped-pair-outputfile> /import1/bowtie_index/mm10/CD1/mm10CD1Ens68_randOrder.fa -1 /import2/RAHUL/RUN1/P0-NE_1.fastq  -2 /import2/RAHUL/RUN1/P0-NE_2.fastq  <output-file-name>
 
 # Step 2.b [Parameters need to be filled]
-nice bowtie -k 1 -p 15 --sam --un <unmapped-pair-outputfile> /import1/bowtie_index/mm10/CD1/mm10_CD1.fa -1 /import2/RAHUL/RUN1/E16-CE_1.fastq  -2 /import2/RAHUL/RUN1/E16-CE_2.fastq  <output-file-name>
-
-nice bowtie  -p 15 --sam --un <unmapped-pair-outputfile> /import1/bowtie_index/mm10/CD1/mm10_CD1.fa -1 /import2/RAHUL/RUN1/P0-CE_1.fastq -2 /import2/RAHUL/RUN1/P0-CE_2.fastq  <output-file-name>
-
-nice bowtie  -p 15 --sam --un <unmapped-pair-outputfile> /import1/bowtie_index/mm10/CD1/mm10_CD1.fa -1 /import2/RAHUL/RUN1/P0-NE_1.fastq  -2 /import2/RAHUL/RUN1/P0-NE_2.fastq  <output-file-name>
+nice bowtie -k 1 -p 15 --sam --un ${outputFileName}_step2b.fq $genomeIndex -1 ${outputFileName}_step2a_1.fq  -2 ${outputFileName}_step2a_2. fq  ${outputFileName}_step2b.sam
 
 
 
@@ -58,19 +59,19 @@ nice mv FilterTool2.class $PROJDIR/bin
 nice cd $PROJDIR/bin
 # This will run FilterTool2, but it needs to have the feild specified below
 # java FilterTool2 -f <first-paired-end-read> -s <second-paired-end-read> -n <min-number-to-detect> -o <output-file-name>
-nice java FilterTool2 -f <> -s <> -n <> -o <>
+nice java FilterTool2 -f ${outputFileName}_step2b_1.fq -s ${outputFileName}_step2b_2.fq -n <> -o ${outputFileName}_step3.fq
 # Move output to the results folder (all output will have the .fq extension)
 nice mv *.fq $PROJDIR/results
 
 # Step 4
 # Step 4.a [Parameters need to be filled]
-nice bowtie -k 10 -p 15 --best --sam /import1/bowtie_index/mm10/CD1/mm10_CD1.fa -1 <trimmed-case2-reads_1.fastq>  -2 <trimmed-case2-reads_1.fastq>  <output-file-name>
+nice bowtie -k 10 -p 15 --best --sam $genomeIndex -1 ${outputFileName}_step3_1.fq  -2 ${outputFileName}_step3_2.fq  ${outputFileName}_step4a.sam
 # Step 4.b [Parameters need to be filled]
-nice bowtie -k 10 -p 15 --sam --best  /import1/bowtie_index/mm10/CD1/mm10_CD1.fa <trimmed-case4-reads.fastq> <output-file-name>
+nice bowtie -k 10 -p 15 --sam --best  $genomeIndex ${outputFileName}_step3_trimmed_Case4Reads.fq ${outputFbleName}_step4b.sam 
 
 Step 5
 # Is this a step?
-
+polyAsitePredict -f ${outputFileName}_step4a.sam -s ${outputFbleName}_step4b.sam -o ${outputFbleName}_step5.bed
 Step 6
 # This will compile the polyAextract
 nice javac $PROJDIR/src/polyAextract.java
@@ -82,7 +83,7 @@ nice mv polyAextract.class $PROJDIR/bin
 nice cd $PROJDIR/bin
 # This will run polyAextract, but it needs to have the feilds specified below.
 # java polyAextract -f <fasta-file-name> -b <bed-file-name> -l <sequence-length> -a <poly-A-tail-length> -o <output-file-name>
-nice java polyAextract -f <> -b <> -l <> -a <> -o <>
+nice java polyAextract -f $genome -b ${outputFbleName}_step5.bed -l <> -a <> -o <>
 # Tbis will move the results to the results folder (the output will have the extension .fa)
 nice mv *.fa $PROJDIR/results
 
