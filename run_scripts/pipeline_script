@@ -5,28 +5,30 @@
 
 #Script Begins
 
+# Changes the shell to bash (just in case anything isn't supported in the default)
+bash
 #This first block initializs a few folders and a variable for the script.
 # This will create a variable; which will contain an address that will be repeated throughout the script.
-nice projdir="/home/projects/gitrepos/polyA"
+nice PROJDIR="/home/projects/gitrepos/polyA"
 # This will create a bin folder to put all the compiled code
-nice mkdir  $projdir/bin
+nice mkdir  $PROJDIR/bin
 # This will create a folder to contain the resutls
-nice mkdir $projdir/resutls
+nice mkdir $PROJDIR/resutls
 
 # Step 1 of pipeline: Select pairs where the second read starts with >=x T’s
 # This will compile FilterTool 
-nice javac $projdir/src/FilterTool.java
+nice javac $PROJDIR/src/FilterTool.java
 # This will move us to the src folder
-nice cd $projdir/src
+nice cd $PROJDIR/src
 # This will move the FilterTool.class (which is FilterTool.java compiled) to the bin folder.
-nice mv FilterTool.class $projdir/bin
+nice mv FilterTool.class $PROJDIR/bin
 # This will move us to the bin folder
-nice cd $projdir/bin
+nice cd $PROJDIR/bin
 # ‎This will run FilterTool, but it need to have the feilds specified below filled
 # java FilterTool -f <first-paired-end-read> -s <second-paired-end-read> -n <number-to-detect> -o <output-file-name
 nice java FilterTool -f <> -s <> -n <> -o <>
 # Move output to the results folder (all output have the .fq extension)
-nice mv *.fq $projdir/results
+nice mv *.fq $PROJDIR/results
 
 # Step 2
 # Step 2.a [Parameters need to be filled]
@@ -47,18 +49,18 @@ nice bowtie  -p 15 --sam --un <unmapped-pair-outputfile> /import1/bowtie_index/m
 
 # Step 3
 # This will complie FilterTool2
-nice javac $projdir/src/FilterTool2.java
+nice javac $PROJDIR/src/FilterTool2.java
 # This will move us to the src folder
-nice cd $projdir/src
+nice cd $PROJDIR/src
 # This will move FilterTool2.class to the bin folder
-nice mv FilterTool2.class $projdir/bin
+nice mv FilterTool2.class $PROJDIR/bin
 # This will move use to the bin folder
-nice cd $projdir/bin
+nice cd $PROJDIR/bin
 # This will run FilterTool2, but it needs to have the feild specified below
 # java FilterTool2 -f <first-paired-end-read> -s <second-paired-end-read> -n <min-number-to-detect> -o <output-file-name>
 nice java FilterTool2 -f <> -s <> -n <> -o <>
 # Move output to the results folder (all output will have the .fq extension)
-nice mv *.fq $projdir/results
+nice mv *.fq $PROJDIR/results
 
 # Step 4
 # Step 4.a [Parameters need to be filled]
@@ -67,4 +69,25 @@ nice bowtie -k 10 -p 15 --best --sam /import1/bowtie_index/mm10/CD1/mm10_CD1.fa 
 nice bowtie -k 10 -p 15 --sam --best  /import1/bowtie_index/mm10/CD1/mm10_CD1.fa <trimmed-case4-reads.fastq> <output-file-name>
 
 Step 5
+# Is this a step?
+
+Step 6
+# This will compile the polyAextract
+nice javac $PROJDIR/src/polyAextract.java
+# This will move us to the src folder
+nice cd $PROJDIR/src
+# This will move polyAextract.class to the bin folder
+nice mv polyAextract.class $PROJDIR/bin
+# This will move us to the bin folder
+nice cd $PROJDIR/bin
+# This will run polyAextract, but it needs to have the feilds specified below.
+# java polyAextract -f <fasta-file-name> -b <bed-file-name> -l <sequence-length> -a <poly-A-tail-length> -o <output-file-name>
+nice java polyAextract -f <> -b <> -l <> -a <> -o <>
+# Tbis will move the results to the results folder (the output will have the extension .fa)
+nice mv *.fa $PROJDIR/results
+
+Step 7
+# [Not Finished]
+
+Step 8
 # [Not Finished]

@@ -39,7 +39,7 @@ public class polyAextract {
 				tailLength = tailLength.parseInt(args[i]);
 			} else if("-o".equalsIgnoreCase(args[i])) {
 				i++;
-				file = new File(args[i]);
+				file = new File(args[i]+".fa");
 			}
 			else {
 				 printHelp = true;
